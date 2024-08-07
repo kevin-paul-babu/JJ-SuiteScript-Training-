@@ -8,11 +8,13 @@
  * 
  * *******************************************************************
  * 
- * Author : Kevin Babu 
+ * Author : Jobin and Jismi IT Services
  * 
  * Date Created : 5 August 2024
  * 
- * Description : When the application sends an API request, then the item fulfilment needs to be created for the sales order. The id and details of the sales order will be passed as body in the HTTP request so that it can find the correct sales order and create the item fulfilment record for the sales order with the correct item details. The API should process the request as the body of the HTTP request.
+ * Description : The application needs to fetch the list of sales order details with an open status. The details should include the following: internal ID, document number, date, and total amount. The data should be in a JSON object. The application will use the API for fetching the sales order whose status is open.
+ * The application needs to fetch the single sales order with item details (item name, quantity, rate, gross amount). The internal id of the sales order will be passed as a parameter in the API. The application needs to use the API for fetching the single sales order. If no sales order is found for the parameter id, then the message "RESULT: NOT FOUND needs to be shown.
+ * REVISION HISTORY 
  * @version  1.0 : 5 August 2024 : Created the intial build  by  JJ0341 
  * 
  * 
