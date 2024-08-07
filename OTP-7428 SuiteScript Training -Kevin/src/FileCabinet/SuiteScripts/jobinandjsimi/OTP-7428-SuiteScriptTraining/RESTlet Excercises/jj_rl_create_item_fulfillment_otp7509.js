@@ -2,6 +2,22 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
+/**************************************************
+ * SuiteScript Training
+ * OTP-7508 : Creating API for creating  the Item fulfillment
+ * 
+ * *******************************************************************
+ * 
+ * Author : Kevin Babu 
+ * 
+ * Date Created : 5 August 2024
+ * 
+ * Description : When the application sends an API request, then the item fulfilment needs to be created for the sales order. The id and details of the sales order will be passed as body in the HTTP request so that it can find the correct sales order and create the item fulfilment record for the sales order with the correct item details. The API should process the request as the body of the HTTP request.
+ * @version  1.0 : 5 August 2024 : Created the intial build  by  JJ0341 
+ * 
+ * 
+ * 
+ **********************************************************************************************/
 define(['N/currentRecord', 'N/record', 'N/search',],
     /**
  * @param{currentRecord} currentRecord
