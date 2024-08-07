@@ -2,6 +2,25 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
+
+/**************************************************
+ * SuiteScript Training
+ * OTP-7508 : Creating API for fectching the Sales Order Details
+ * 
+ * *******************************************************************
+ * 
+ * Author : Kevin Babu 
+ * 
+ * Date Created : 5 August 2024
+ * 
+ * Description : The application needs to fetch the list of sales order details with an open status. The details should include the following: internal ID, document number, date, and total amount. The data should be in a JSON object. The application will use the API for fetching the sales order whose status is open.
+ * The application needs to fetch the single sales order with item details (item name, quantity, rate, gross amount). The internal id of the sales order will be passed as a parameter in the API. The application needs to use the API for fetching the single sales order. If no sales order is found for the parameter id, then the message "RESULT: NOT FOUND needs to be shown.
+ * REVISION HISTORY 
+ * @version  1.0 : 5 August 2024 : Created the intial build  by  JJ0341 
+ * 
+ * 
+ * 
+ **********************************************************************************************/
 define(['N/record', 'N/search'],
     /**
  * @param{record} record
