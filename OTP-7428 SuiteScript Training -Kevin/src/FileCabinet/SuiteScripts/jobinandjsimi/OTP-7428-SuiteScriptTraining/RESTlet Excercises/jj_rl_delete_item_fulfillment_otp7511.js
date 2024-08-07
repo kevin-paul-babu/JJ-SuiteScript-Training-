@@ -2,6 +2,21 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
+/**************************************************
+ * SuiteScript Training
+ * OTP-7511 : Creating API for deleting the item fufillment
+ * 
+ * *******************************************************************
+ * 
+ * Author : Kevin Babu 
+ * 
+ * Date Created : 6 August 2024
+ * 
+ * Description : he application needs to delete the item fulfilment record using the API. The id of the item fulfilment to delete will be passed in the DELETE HTTP request, so the API should delete the correct item fulfillment.
+ * REVISION HISTORY 
+ * @version  1.0 : 6 August 2024 : Created the intial build  by  JJ0341 
+ * 
+ **********************************************************************************************/
 define(['N/record', 'N/search'],
     /**
  * @param{record} record
