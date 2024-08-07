@@ -2,6 +2,22 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
+/**************************************************
+ * SuiteScript Training
+ * OTP-7510 : Creating API for updating the item fufillment
+ * 
+ * *******************************************************************
+ * 
+ * Author : Kevin Babu 
+ * 
+ * Date Created : 6 August 2024
+ * 
+ * Description : Update the item fulfilment record as per the body of the PUT HTTP request. The application will call the API for updating the item fulfilment record, and details of the update will be sent as JSON from the application. The API will find the item fulfilment record and update the item fulfilment record.
+ * 
+ * REVISION HISTORY 
+ * @version  1.0 : 6 August 2024 : Created the intial build  by  JJ0341 
+ * 
+ **********************************************************************************************/
 define(['N/record', 'N/search'],
     /**
  * @param{record} record
