@@ -64,7 +64,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                                label: "Customer Email",
                                type:serverWidget.FieldType.EMAIL,
                                container: "custpage_primaryInfo"
-                       });
+                       }).isMandatory =true;
                            form.addField({
                                id: "custage_subject",
                                label: "Subject",
@@ -98,7 +98,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                        log.debug("email:",customerEmail);
                        let customsearchObj = search.create({
                            type: 'customrecord_jj_sl_customer_rec_otp7491',
-                           filters: [['custrecord_jj_sl_cusname_otp7491','is',customerName],"AND",['custrecord_jj_sl_cusaemail_otp7491','is',customerEmail]],
+                           filters: [['custrecord_jj_sl_cusaemail_otp7491','is',customerEmail]],
                            columns: ['internalid']
                        });
                        let resultCount = customsearchObj.run().getRange({
@@ -229,7 +229,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                                    let inactive = salesrepObj.isinactive;
                                    log.debug("isinacrive",inactive);
                                    if(salesrep && inactive == true){
-                                    log.debug("if");
+                                    log.debug("Sales Rep is inactive");
                                        email.send({
                                            author: -5,
                                            body: "Custom Record Created To NetSuite Admin",
@@ -256,7 +256,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                        }
                        
                        else{
-                           scriptContext.response.write("Customer Already Exist");
+                           scriptContext.response.write("Customer with Same Email Already Exist");
                        }
 
                        Details += "<table border='1'>" +
