@@ -4,7 +4,7 @@
  */
 /**************************************************
  * SuiteScript Training
- * OTP-7508 : Creating API for creating  the Item fulfillment
+ * OTP-7509 : Creating API for creating  the Item fulfillment
  * 
  * *******************************************************************
  * 
