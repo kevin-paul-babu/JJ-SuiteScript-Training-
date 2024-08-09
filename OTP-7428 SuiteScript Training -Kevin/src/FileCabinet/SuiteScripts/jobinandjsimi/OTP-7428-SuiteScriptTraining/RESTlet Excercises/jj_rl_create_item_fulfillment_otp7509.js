@@ -20,13 +20,12 @@
  * 
  * 
  **********************************************************************************************/
-define(['N/currentRecord', 'N/record', 'N/search',],
+define(['N/record', 'N/search',],
     /**
- * @param{currentRecord} currentRecord
  * @param{record} record
  * @param{search} search
  */
-    (currentRecord, record, search) => {
+    ( record, search) => {
         /**
          * Defines the function that is executed when a GET request is sent to a RESTlet.
          * @param {Object} requestParams - Parameters from HTTP request URL; parameters passed as an Object (for all supported
@@ -35,10 +34,7 @@ define(['N/currentRecord', 'N/record', 'N/search',],
          *     Object when request Content-Type is 'application/json' or 'application/xml'
          * @since 2015.2
          */
-        // const get = (requestParams) => {
-
-        // }
-
+       
         /**
          * Defines the function that is executed when a PUT request is sent to a RESTlet.
          * @param {string | Object} requestBody - The HTTP request body; request body are passed as a string when request
@@ -48,9 +44,7 @@ define(['N/currentRecord', 'N/record', 'N/search',],
          *     Object when request Content-Type is 'application/json' or 'application/xml'
          * @since 2015.2
          */
-        // const put = (requestBody) => {
-
-        // }
+       
 
         /**
          * Defines the function that is executed when a POST request is sent to a RESTlet.
@@ -65,7 +59,7 @@ define(['N/currentRecord', 'N/record', 'N/search',],
             try{
                 let salesorderID = requestBody.salesOrderId;
                 let soDetails    = requestBody.soDetails;
-                // let count = requestBody.lineCount;
+                let lineCount = requestBody.lineCount;
                 log.debug("salesorderId",salesorderID);
                 log.debug(soDetails);
                 if(!salesorderID||!soDetails||!Array.isArray(soDetails)){
@@ -73,21 +67,18 @@ define(['N/currentRecord', 'N/record', 'N/search',],
                     log.debug("error in the requestBody");
                 
                 }
-                let itemFulfill;
-                itemFulfill = record.transform({
+                
+                let itemFulfill = record.transform({
                     fromType:record.Type.SALES_ORDER,
                     fromId: salesorderID,
                     toType: record.Type.ITEM_FULFILLMENT,
                     isDynamic: true
                 });
-                let lineCount = itemFulfill.getLineCount({
-                    sublistId: "item"
-                });
-                log.debug(lineCount);
+                log.debug("line count ",lineCount);
                 for(let i = 0;i<lineCount;i++){
                     itemFulfill.setCurrentSublistValue({
                         sublistId: "item",
-                        fieldId: "quanity",
+                        fieldId: "quantity",
                         value: soDetails.quantity,
                         ignoreFieldChange: true
                     });
@@ -120,9 +111,7 @@ define(['N/currentRecord', 'N/record', 'N/search',],
          *     Object when request Content-Type is 'application/json' or 'application/xml'
          * @since 2015.2
          */
-        // const doDelete = (requestParams) => {
-
-        // }
+       
 
         return { post}
 
