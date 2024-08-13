@@ -58,46 +58,90 @@ define(['N/record', 'N/search',],
         const post = (requestBody) => {
             try{
                 let salesorderID = requestBody.salesOrderId;
+                // let recordObj = record.load({
+                //     type: record.Type.SALES_ORDER,
+                //     id: salesorderID,
+                //     isDynamic: true,
+                //     defaultValues: Object
+                // });
+               
                 let soDetails    = requestBody.soDetails;
-                let lineCount = requestBody.lineCount;
+                //let lineCount = requestBody.soDetails.line;
                 log.debug("salesorderId",salesorderID);
+        
                 log.debug(soDetails);
-                if(!salesorderID||!soDetails||!Array.isArray(soDetails)){
+                log.debug("quantity",soDetails.quantity);
+                 if(!salesorderID){
               
-                    log.debug("error in the requestBody");
+                   log.debug("error in the requestBody");  
                 
-                }
-                
-                let itemFulfill = record.transform({
-                    fromType:record.Type.SALES_ORDER,
-                    fromId: salesorderID,
-                    toType: record.Type.ITEM_FULFILLMENT,
-                    isDynamic: true
-                });
-                log.debug("line count ",lineCount);
-                for(let i = 0;i<lineCount;i++){
-                    itemFulfill.setCurrentSublistValue({
-                        sublistId: "item",
-                        fieldId: "quantity",
-                        value: soDetails.quantity,
-                        ignoreFieldChange: true
+                 }
+                 else{
+                    let itemFulfill = record.transform({
+                        fromType:record.Type.SALES_ORDER,
+                        fromId: salesorderID,
+                        toType: record.Type.ITEM_FULFILLMENT,
+                        isDynamic: true
                     });
-                }
-                    itemFulfill.commitLine({
-                        sublistId: "item",
-                        ignoreRecalc: true
+
+                    let lineCount = itemFulfill.getLineCount({
+                        sublistId: "item"
                     });
-                    itemFulfill.setValue({
-                        fieldId:"status",
-                        value:"SalesOrd:F"
-                    })
-                    let recordId  = itemFulfill.save({
-                        'enableSourcing':true,
-                        ignoreMandatoryFields:false
-                    });
-                    return recordId;
-            
-       
+                    log.debug("line count ",lineCount);
+                    log.debug(itemFulfill);
+                    if(lineCount == 1){
+                        itemFulfill.setCurrentSublistValue({
+                            sublistId: "item",
+                            fieldId: "quantity",
+                            value: soDetails[quantity],
+                            line: lineCount
+                        });                    
+                        itemFulfill.commitLine({
+                            sublistId: "item",
+                        });
+                        let recordId  = itemFulfill.save({
+                            enableSourcing:true,
+                            ignoreMandatoryFields:true
+                        });
+                        return recordId;     
+                   
+                    }
+                    else{
+                            for(let i=0;i<soDetails.length;i++){
+                                itemLine = soDetails[i];
+                            for(let j =0;j<lineCount;j++){
+                                itemFulfill.selectLine({
+                                    sublistId: "item",
+                                    line: j
+                                });
+                                let item = itemFulfill.getCurrentSublistValue({
+                                    sublistId: "item",
+                                    fieldId: "item"
+                                });
+                                if(item == itemLine.item){
+                                    itemFulfill.setCurrentSublistValue({
+                                        sublistId: "item",
+                                        fieldId: "quantity",
+                                        value: itemLine.quantity,
+                                        line: i
+                                    });        
+                                    itemFulfill.commitLine({
+                                        sublistId: "item",
+                                    });
+                                }
+                                
+                             }
+                            }
+                            let recordId  = itemFulfill.save({
+                                enableSourcing:true,
+                                ignoreMandatoryFields:true
+                            });
+                            return recordId;     
+                                              
+
+                        }
+                 }
+               
             }catch(e){
                 log.error("error",e.message);
             }
