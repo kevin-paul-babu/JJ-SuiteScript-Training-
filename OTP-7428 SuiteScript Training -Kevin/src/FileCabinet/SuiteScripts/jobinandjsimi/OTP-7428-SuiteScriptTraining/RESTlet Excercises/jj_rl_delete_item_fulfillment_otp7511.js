@@ -34,13 +34,15 @@ define(['N/record'],
          */
         const doDelete = (requestParams) => {
         try{
+            let id = requestParams.id;
+            log.debug(id);
             record.delete({
-                type:"itemfulfillment",
+                type: record.Type.ITEM_FULFILLMENT,
                 id: requestParams.id
             });
             return requestParams.id;
         }catch(e){
-            log.error("error",e.message)
+            log.error("error",e.message);
         }
         }
       
