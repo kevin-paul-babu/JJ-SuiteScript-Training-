@@ -158,7 +158,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                                        value: Subject
                                    });
                                    recordObj.setValue({
-                                       fieldId:"custrecord_jj_sl_Message_otp7491",
+                                       fieldId:"custrecord_jj_sl_message_otp7491",
                                        value: cusmesage
                                    });
                                    let recid;
