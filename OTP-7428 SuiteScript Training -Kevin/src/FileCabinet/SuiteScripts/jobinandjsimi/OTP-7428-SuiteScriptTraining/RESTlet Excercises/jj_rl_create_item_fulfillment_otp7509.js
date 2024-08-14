@@ -70,7 +70,7 @@ define(['N/record', 'N/search',],
                 log.debug("salesorderId",salesorderID);
         
                 log.debug(soDetails);
-                log.debug("quantity",soDetails.quantity);
+
                  if(!salesorderID){
               
                    log.debug("error in the requestBody");  
@@ -90,20 +90,38 @@ define(['N/record', 'N/search',],
                     log.debug("line count ",lineCount);
                     log.debug(itemFulfill);
                     if(lineCount == 1){
-                        itemFulfill.setCurrentSublistValue({
-                            sublistId: "item",
-                            fieldId: "quantity",
-                            value: soDetails[quantity],
-                            line: lineCount
-                        });                    
-                        itemFulfill.commitLine({
-                            sublistId: "item",
-                        });
+                        for(let i=0;i<soDetails.length;i++){
+                            itemLine = soDetails[i];
+                        for(let j =0;j<lineCount;j++){
+                            itemFulfill.selectLine({
+                                sublistId: "item",
+                                line: j
+                            });
+                            let item = itemFulfill.getCurrentSublistValue({
+                                sublistId: "item",
+                                fieldId: "item"
+                            });
+                            if(item == itemLine.item){
+                                itemFulfill.setCurrentSublistValue({
+                                    sublistId: "item",
+                                    fieldId: "quantity",
+                                    value: itemLine.quantity,
+                                    line: i
+                                });        
+                                itemFulfill.commitLine({
+                                    sublistId: "item",
+                                });
+                            }
+                            
+                         }
+                        }
                         let recordId  = itemFulfill.save({
                             enableSourcing:true,
                             ignoreMandatoryFields:true
                         });
                         return recordId;     
+                                          
+
                    
                     }
                     else{
