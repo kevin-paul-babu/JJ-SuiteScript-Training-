@@ -42,7 +42,23 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
          * @since 2015.2
          */
 
-        const getInputData = (inputContext) => {
+        /** 
+         * Defines the function to send email from NetSuite Admin to Customer with subject and attachment
+         * @param {Object} 
+         **/
+        function sendAdminEmailAlert(csvFileId, customerId) {
+            email.send({
+                author: -5,
+                body: "Monthly Invoices Overdue",
+                recipients: customerId,
+                subject: "Overdue Alert",
+                attachments: [file.load({
+                    id: csvFileId
+                })]
+                
+            })
+        }
+              const getInputData = (inputContext) => {
             try
             {
                 return  search.create({
@@ -79,9 +95,7 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                 let entity = result.values.entity.value;
                 let tranid = result.values.tranid;
                 let total  = result.values.total;
-                //log.debug("total",total);
                 let overdue = result.values.daysoverdue;
-                //log.debug("overdue",overdue);
                 let lookupsearchObj = search.lookupFields({
                     type: search.Type.CUSTOMER,
                     id: entity,
@@ -98,9 +112,7 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                     invoiceTotal : total,
                     overDue : overdue,
                  }
-                 //log.debug("details inv amount",details.invoiceTotal);
-                 //log.debug("details  inv overdue",details.overDue);
-                 return mapContext.write({
+                    return mapContext.write({
                     key:entity,
                     value:details
                  });
@@ -133,19 +145,13 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                     return JSON.parse(value);
                 })
 
-                let salesRep;
+          
                 let csvContent = 'Customer Name,Customer Email,Invoice Document No,Invoice Amount,DaysOverdue\n';
                 Details.forEach(function(data){
                     csvContent+=data.customer+','+data.customerEmail+','+data.invoicedocno+','+data.invoiceTotal+','+data.overDue+'\n';
                 
                 });
-                let recordObj = record.load({
-                    type: record.Type.CUSTOMER,
-                    id: customerId
-                });
-                salesRep = recordObj.getValue('salesrep');
-                log.debug("csvdetails",csvContent);
-
+                
                 let csvFile = file.create({
                     name: 'customer_overdue_invoices'+customerId+".csv",
                     fileType: file.Type.CSV,
@@ -154,7 +160,13 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                 });
 
                 let csvFileId = csvFile.save();
-
+                let lookupsearchObj = search.lookupFields({
+                    type: record.Type.CUSTOMER,
+                    id: customerId,
+                    columns: ['salesrep']
+                 });
+                    let salesRep = lookupsearchObj.salesrep.value;
+                    
                 if(salesRep)
                     {
                         email.send
@@ -169,48 +181,14 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                         })  
                 }
                 else{
-                    email.send({
-                        author: -5,
-                        body: "Monthly Invoices Overdue",
-                        recipients: customerId,
-                        subject: "Overdue Alert",
-                        attachments: [file.load({
-                            id: csvFileId
-                        })]
-                        
-                    })
-                }
-                                
-                
+
+                    sendAdminEmailAlert(csvFileId, customerId)
+                }                  
             }catch(e){
-                log.error("error on reduce",e.message,e.stack)
+                log.error("error on reduce",e.message, e.stack)
             }
 
         }
-
-
-        /**
-         * Defines the function that is executed when the summarize entry point is triggered. This entry point is triggered
-         * automatically when the associated reduce stage is complete. This function is applied to the entire result set.
-         * @param {Object} summaryContext - Statistics about the execution of a map/reduce script
-         * @param {number} summaryContext.concurrency - Maximum concurrency number when executing parallel tasks for the map/reduce
-         *     script
-         * @param {Date} summaryContext.dateCreated - The date and time when the map/reduce script began running
-         * @param {boolean} summaryContext.isRestarted - Indicates whether the current invocation of this function is the first
-         *     invocation (if true, the current invocation is not the first invocation and this function has been restarted)
-         * @param {Iterator} summaryContext.output - Serialized keys and values that were saved as output during the reduce stage
-         * @param {number} summaryContext.seconds - Total seconds elapsed when running the map/reduce script
-         * @param {number} summaryContext.usage - Total number of governance usage units consumed when running the map/reduce
-         *     script
-         * @param {number} summaryContext.yields - Total number of yields when running the map/reduce script
-         * @param {Object} summaryContext.inputSummary - Statistics about the input stage
-         * @param {Object} summaryContext.mapSummary - Statistics about the map stage
-         * @param {Object} summaryContext.reduceSummary - Statistics about the reduce stage
-         * @since 2015.2
-         */
-        // const summarize = (summaryContext) => {
-
-        // }
 
         return {getInputData, map, reduce}
 
