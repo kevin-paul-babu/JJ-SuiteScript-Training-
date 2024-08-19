@@ -40,7 +40,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
          * @since 2015.2
          */
         /** 
-         * Defines the function to create custom record  in NetSuite
+         * Defines the function to send email Notification 
          * @param {Object}  subject
          * @param {Object}  recurl
          **/
