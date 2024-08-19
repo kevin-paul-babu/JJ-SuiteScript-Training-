@@ -123,7 +123,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                     recordId: recid,
                     isEditMode: false
                 });
-                log.debug("salesrep",salesrep);
+   
                 if(salesrep){
                     let salesrepObj = search.lookupFields({
                         type: search.Type.EMPLOYEE,
