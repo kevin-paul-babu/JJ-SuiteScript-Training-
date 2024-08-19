@@ -39,6 +39,159 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
          * @param {ServerResponse} scriptContext.response - Suitelet response
          * @since 2015.2
          */
+        /** 
+         * Defines the function to create custom record  in NetSuite
+         * @param {Object}  subject
+         * @param {Object}  recurl
+         **/
+
+        function sendEmailNotification(subject, recurl) {
+            email.send({
+                author: -5,
+                body: "Custom Record Created",
+                recipients: -5,
+                subject: subject + " Link: " + recurl
+            });
+        }
+    /** 
+         * Defines the function to create custom record  in NetSuite
+         * @param {Object} 
+         **/
+
+        function createCustomRecords(customerName,customerEmail,scriptContext,Subject,cusmesage){
+            let recordObj;
+            recordObj = record.create({
+                type: 'customrecord_jj_sl_customer_rec_otp7491',
+                isDynamic: true,
+            });
+            recordObj.setValue({
+                fieldId: 'custrecord_jj_sl_cusname_otp7491',
+                value: customerName
+            });
+            recordObj.setValue({
+                fieldId:'custrecord_jj_sl_cusaemail_otp7491',
+                value:customerEmail
+            });
+           
+            let customerSearch = search.create({
+                type: search.Type.CUSTOMER,
+                filters: [["email","is",customerEmail]],
+                columns: ['internalid','salesrep','email']
+            });
+            let results = customerSearch.run();
+            let customerId;
+            let customerNSEmail;
+            let salesrep;
+            results.each(function(result)
+            {
+                customerNSEmail  = result.getValue('email');
+
+                customerId = result.getValue({
+                    name: "internalid"
+                });
+                
+                salesrep = result.getValue({
+                    name: "salesrep",
+                });
+            });
+            if(customerNSEmail === customerEmail){
+                let cusurl = url.resolveRecord({
+                    recordType: record.Type.CUSTOMER,
+                    recordId: customerId,
+                    isEditMode: false
+                });
+                let baseUrl = 'https://system.netsuite.com';
+                let urllink = baseUrl + cusurl;
+                
+                recordObj.setValue({
+                    fieldId:"custrecord_jj_sl_cusrecordlink_otp7491",
+                    value:urllink
+                });
+                recordObj.setValue({
+                    fieldId: "custrecord_jj_sl_cussubect_otp7491",
+                    value: Subject
+                });
+                recordObj.setValue({
+                    fieldId:"custrecord_jj_sl_Message_otp7491",
+                    value: cusmesage
+                })
+                let recid= recordObj.save({
+                    ignoreMandatoryFields: true
+                });
+                let recurl = url.resolveRecord({
+                    recordType: 'customrecord_jj_sl_customer_rec_otp7491',
+                    recordId: recid,
+                    isEditMode: false
+                });
+                log.debug("salesrep",salesrep);
+                if(salesrep){
+                    let salesrepObj = search.lookupFields({
+                        type: search.Type.EMPLOYEE,
+                        id: salesrep,
+                        columns:['isinactive']
+                        });
+                        let inactive = salesrepObj.isinactive;
+                        if(salesrep && inactive == true){
+                            sendEmailNotification("Custom Record Created To NetSuite Admin",recurl);
+                        }
+                       else{
+                        email.send({
+                             author: -5,
+                             recipients: salesrep,
+                             body: "Custom Record Created To Sales Rep",
+                             subject:"Custom Record Detail Created"+urllink, 
+                            });
+                      
+                    }
+                    
+                }
+                else{
+                    sendEmailNotification("Custom Record Created To NetSuite Admin",recurl);
+                }
+               
+            let Details = [];
+            Details += "<table border='1'>" +
+            "<tr><td>Customer Name:</td><td>" + customerName + "</td></tr>" +
+            "<tr><td>Email:</td><td>" +customerEmail + "</td></tr>" +
+            "<tr><td>Subject:</td><td>" + Subject + "</td></tr>" +
+            "<tr><td>Message:</td><td>" + cusmesage + "</td></tr>" +
+            "</table><br><br>";
+            scriptContext.response.write(Details);
+            }
+            else{
+                recordObj.setValue({
+                    fieldId:"custrecord_jj_sl_cusrecordlink_otp7491",
+                    value:""
+                });
+                recordObj.setValue({
+                    fieldId: "custrecord_jj_sl_cussubect_otp7491",
+                    value: Subject
+                });
+                recordObj.setValue({
+                    fieldId:"custrecord_jj_sl_message_otp7491",
+                    value: cusmesage
+                });
+                let recid;
+                recid = recordObj.save({
+                    ignoreMandatoryFields: true
+                    });
+                let recurl = url.resolveRecord({
+                    recordType: 'customrecord_jj_sl_customer_rec_otp7491',
+                    recordId: recid,
+                    isEditMode: false
+                });
+                let Details = [];
+                Details += "<table border='1'>" +
+                "<tr><td>Customer Name:</td><td>" + customerName + "</td></tr>" +
+                "<tr><td>Email:</td><td>" +customerEmail + "</td></tr>" +
+                "<tr><td>Subject:</td><td>" + Subject + "</td></tr>" +
+                "<tr><td>Message:</td><td>" + cusmesage + "</td></tr>" +
+                "</table><br><br>";
+                scriptContext.response.write(Details);
+                sendEmailNotification("Custom Record Created To NetSuite Admin",recurl);
+            }
+        }
+ 
         const onRequest = (scriptContext) => {
             try
             {
@@ -88,14 +241,14 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                    {
                        let request = scriptContext.request;
                        let customerName = request.parameters.custpage_name;
-                       log.debug("name",customerName);
+                    
                        let customerEmail = request.parameters.custpage_email;
-                       log.debug('email',customerEmail);
+                    
                        let Subject = request.parameters.custage_subject;
                        let cusmesage = request.parameters.custpage_message;
    
                        let Details = [];
-                       log.debug("email:",customerEmail);
+                     
                        let customsearchObj = search.create({
                            type: 'customrecord_jj_sl_customer_rec_otp7491',
                            filters: [['custrecord_jj_sl_cusaemail_otp7491','is',customerEmail]],
@@ -105,171 +258,23 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                            start: 0,
                            end: 1000
                        });
-                       
-                       let  recordObj;
+                                   
                        if(resultCount < 1)
-                           {
-                           recordObj = record.create({
-                               type: 'customrecord_jj_sl_customer_rec_otp7491',
-                               isDynamic: true,
-                           });
-                           recordObj.setValue({
-                               fieldId: 'custrecord_jj_sl_cusname_otp7491',
-                               value: customerName
-                           })
-                            
-                           recordObj.setValue({
-                               fieldId:'custrecord_jj_sl_cusaemail_otp7491',
-                               value:customerEmail
-                           });
-                           // log.debug("email",customerEmail);
-                           let customerSearch = search.create({
-                               type: search.Type.CUSTOMER,
-                               filters: [["email","is",customerEmail]],
-                               columns: ['internalid','salesrep','email']
-                           });
-                           let results = customerSearch.run();
-                           let customerId;
-                           let salesrep;
-                           let customerNSEmail;
-                          
-                           results.each(function(result)
-                           {
-                               customerNSEmail  = result.getValue('email');
-                               customerId = result.getValue({
-                                   name: "internalid"
-                               });
-                               salesrep = result.getValue({
-                                   name: "salesrep",
-                               });
-                           });
-   //If a customer email is not existing in the customer records of NetSuite
-                           if(customerNSEmail !== customerEmail)
-                               {
-                                   alert("customer record not found in NetSuite");
-                                   
-                                   recordObj.setValue({
-                                       fieldId:"custrecord_jj_sl_cusrecordlink_otp7491",
-                                       value:""
-                                   });
-       
-                                   recordObj.setValue({
-                                       fieldId: "custrecord_jj_sl_cussubect_otp7491",
-                                       value: Subject
-                                   });
-                                   recordObj.setValue({
-                                       fieldId:"custrecord_jj_sl_message_otp7491",
-                                       value: cusmesage
-                                   });
-                                   let recid;
-                                  
-                               
-                                       recid = recordObj.save({
-                                           ignoreMandatoryFields: true
-                                       });
-                                                              
-                                   
-                                   let recurl = url.resolveRecord({
-                                       recordType: 'customrecord_jj_sl_customer_rec_otp7491',
-                                       recordId: recid,
-                                       isEditMode: false
-                                   });
-                                   Details += "<table border='1'>" +
-                                   "<tr><td>Customer Name:</td><td>" + customerName + "</td></tr>" +
-                                   "<tr><td>Email:</td><td>" +customerEmail + "</td></tr>" +
-                                   "<tr><td>Subject:</td><td>" + Subject + "</td></tr>" +
-                                   "<tr><td>Message:</td><td>" + cusmesage + "</td></tr>" +
-                                   "</table><br><br>";
-                                   scriptContext.response.write(Details);
-                                   email.send({
-                                       author: -5,
-                                       body: "Custom Record Created",
-                                       recipients: -5,
-                                       subject:"Customer Record Created Link: "+recurl, 
-                                   });
-                               }
-                               else
-                               {
-                                   log.debug("salesrep",salesrep);
-       
-                                   let cusurl = url.resolveRecord({
-                                       recordType: record.Type.CUSTOMER,
-                                       recordId: customerId,
-                                       isEditMode: false
-                                   });
-                                   let baseUrl = 'https://system.netsuite.com';
-                                   let urllink = baseUrl + cusurl;
-                                   log.debug('URL', urllink);
-                                   recordObj.setValue({
-                                       fieldId:"custrecord_jj_sl_cusrecordlink_otp7491",
-                                       value:urllink
-                                   });
-                                   recordObj.setValue({
-                                       fieldId: "custrecord_jj_sl_cussubect_otp7491",
-                                       value: Subject
-                                   });
-                                   recordObj.setValue({
-                                       fieldId:"custrecord_jj_sl_Message_otp7491",
-                                       value: cusmesage
-                                   })
-                                   let recid= recordObj.save({
-                                       ignoreMandatoryFields: true
-                                   });
-                                   let recurl = url.resolveRecord({
-                                       recordType: 'customrecord_jj_sl_customer_rec_otp7491',
-                                       recordId: recid,
-                                       isEditMode: false
-                                   });
-                                   
-                                   let salesrepObj = search.lookupFields({
-                                   type: search.Type.EMPLOYEE,
-                                   id: salesrep,
-                                   columns:['isinactive']
-                                   })
-                                   let inactive = salesrepObj.isinactive;
-                                   log.debug("isinacrive",inactive);
-                                   if(salesrep && inactive == true){
-                                    log.debug("Sales Rep is inactive");
-                                       email.send({
-                                           author: -5,
-                                           body: "Custom Record Created To NetSuite Admin",
-                                           recipients: -5,
-                                           subject:"Customer Record Created Link: "+recurl, 
-                                       });
-                                   }
-                                  else{
-                                    log.debug("else");
-                                           email.send({
-                                               author: -5,
-                                               recipients: salesrep,
-                                               body: "Custom Record Created To Sales Rep",
-                                               subject:"Custom Record Detail Created"+urllink, 
-                                           });
-                                           email.send({
-                                               author: -5,
-                                               body: "Custom Record Created To NetSuite Admin",
-                                               recipients: -5,
-                                               subject:"Customer Record Created Link: "+recurl, 
-                                           });
-                                       } 
-                               }
-                       }
-                       
+                        {
+                       createCustomRecords(customerName,customerEmail,scriptContext,Subject,cusmesage);
+                        } 
                        else{
-                           scriptContext.response.write("Customer with Same Email Already Exist");
+                            let Details = [];
+                            Details += "<table border='1'>" +
+                                       "<tr><td>Customer Name:</td><td>" + customerName + "</td></tr>" +
+                                       "<tr><td>Email:</td><td>" +customerEmail + "</td></tr>" +
+                                       "<tr><td>Subject:</td><td>" + Subject + "</td></tr>" +
+                                       "<tr><td>Message:</td><td>" + cusmesage + "</td></tr>" +
+                                       "</table><br><br>";
+                              scriptContext.response.write("Customer with Same Email Already Exist\n",Details);
                        }
-
-                       Details += "<table border='1'>" +
-                   "<tr><td>Customer Name:</td><td>" + customerName + "</td></tr>" +
-                   "<tr><td>Email:</td><td>" +customerEmail + "</td></tr>" +
-                   "<tr><td>Subject:</td><td>" + Subject + "</td></tr>" +
-                   "<tr><td>Message:</td><td>" + cusmesage + "</td></tr>" +
-                   "</table><br><br>";
-                   scriptContext.response.write(Details);
                    }
-                   
-   
-   
+
             }
            catch(e)
            {
