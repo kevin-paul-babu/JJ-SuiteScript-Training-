@@ -58,22 +58,10 @@ define(['N/record', 'N/search',],
         const post = (requestBody) => {
             try{
                 let salesorderID = requestBody.salesOrderId;
-                // let recordObj = record.load({
-                //     type: record.Type.SALES_ORDER,
-                //     id: salesorderID,
-                //     isDynamic: true,
-                //     defaultValues: Object
-                // });
-               
                 let soDetails    = requestBody.soDetails;
-                //let lineCount = requestBody.soDetails.line;
-                log.debug("salesorderId",salesorderID);
-        
-                log.debug(soDetails);
-
                  if(!salesorderID){
               
-                   log.debug("error in the requestBody");  
+                   log.error("error in the requestBody");  
                 
                  }
                  else{
