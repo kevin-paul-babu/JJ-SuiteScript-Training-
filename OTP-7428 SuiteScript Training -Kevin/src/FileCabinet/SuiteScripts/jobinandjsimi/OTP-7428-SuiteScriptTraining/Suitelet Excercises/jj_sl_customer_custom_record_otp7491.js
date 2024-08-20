@@ -45,12 +45,14 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
          * @param {Object}  recurl
          **/
 
-        function sendEmailNotification(subject, recurl) {
+        function sendEmailNotification(recurl) { 
+            let eBody = '<p>Dear Cathy Caidigan,<p>'+'<p>\n</p>'+'<p>A new record is created in the custom record</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+'Cathy Caidgan';
             email.send({
                 author: -5,
-                body: "Custom Record Created",
+                body: eBody,
                 recipients: -5,
-                subject: subject + " Link: " + recurl
+                subject: "Notification alert Custom Record Created"
+                
             });
         }
     /** 
@@ -128,25 +130,27 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                     let salesrepObj = search.lookupFields({
                         type: search.Type.EMPLOYEE,
                         id: salesrep,
-                        columns:['isinactive']
+                        columns:['isinactive','entityid']
                         });
                         let inactive = salesrepObj.isinactive;
+                        let salesRep = salesrepObj.entityid;
                         if(salesrep && inactive == true){
-                            sendEmailNotification("Custom Record Created To NetSuite Admin",recurl);
+                            sendEmailNotification(recurl);
                         }
                        else{
+                        let eBody = '<p>Dear  '+salesRep+',<p>'+'<p>\n</p>'+'<p>A new record is created in the custom record</p>'+'<p>\n</p>'+'<p>Link:'+recurl+'</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesRep;
                         email.send({
-                             author: -5,
+                             author: -5, 
                              recipients: salesrep,
-                             body: "Custom Record Created To Sales Rep",
-                             subject:"Custom Record Detail Created"+urllink, 
+                             body: eBody,
+                             subject:"Notification alert Custom Record Created" 
+
                             });
-                      
+                            sendEmailNotification(recurl);
                     }
-                    
                 }
                 else{
-                    sendEmailNotification("Custom Record Created To NetSuite Admin",recurl);
+                    sendEmailNotification(recurl);
                 }
                
             let Details = [];
@@ -223,6 +227,7 @@ define([ 'N/email', 'N/log', 'N/record',  'N/search', 'N/ui/serverWidget', 'N/ur
                                label: "Subject",
                                type: serverWidget.FieldType.TEXT,
                                container: "custpage_primaryInfo"
+
                        });
                            form.addField({
                                id: "custpage_message",
