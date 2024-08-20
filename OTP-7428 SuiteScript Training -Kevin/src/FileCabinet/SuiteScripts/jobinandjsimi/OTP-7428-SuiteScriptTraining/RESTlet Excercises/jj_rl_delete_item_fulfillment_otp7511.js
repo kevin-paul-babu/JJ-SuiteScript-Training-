@@ -35,7 +35,6 @@ define(['N/record'],
         const doDelete = (requestParams) => {
         try{
             let id = requestParams.id;
-            log.debug(id);
             record.delete({
                 type: record.Type.ITEM_FULFILLMENT,
                 id: requestParams.id
