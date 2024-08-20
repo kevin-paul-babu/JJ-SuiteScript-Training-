@@ -48,9 +48,6 @@ define(['N/record', 'N/search'],
         const put = (requestBody) => {
             try{
                 let itemfulfillId = requestBody.itemfulfillId;
-                log.debug(itemfulfillId);
-                let ifDetails = requestBody.ifDetails;
-                log.debug(ifDetails);
                 let fulfillOrder = record.submitFields({
                     type: "itemfulfillment",
                     id: itemfulfillId,
