@@ -163,18 +163,21 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                 let lookupsearchObj = search.lookupFields({
                     type: record.Type.CUSTOMER,
                     id: customerId,
-                    columns: ['salesrep']
+                    
+                    columns: ['salesrep','entityid']
                  });
                     let salesRep = lookupsearchObj.salesrep.value;
+                    let customerName = lookupsearchObj.entityid[0].text;
+                    let salesrep = lookupsearchObj.salesrep[0].text;
                     
                 if(salesRep)
-                    {
+                    {    let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesrep;
                         email.send
                         ({
                             author: salesRep,
-                            body: "Monthly Invoices Overdue",
+                            body: eBody,
                             recipients: customerId,
-                            subject: "Overdue Alert",
+                            subject: "Invoice Overdue Alert",
                             attachments: [file.load({
                                 id: csvFileId
                             })]
