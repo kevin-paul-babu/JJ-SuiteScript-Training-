@@ -1,0 +1,9 @@
+<advancedpdftemplate scriptid="custtmpl_jj_invoice_temp_otp7504" standard="STDTMPLCUSTINVC">
+  <description></description>
+  <displaysourcecode>T</displaysourcecode>
+  <isinactive>F</isinactive>
+  <preferred>T</preferred>
+  <printtype>TRANSACTION</printtype>
+  <title>Standard Invoice</title>
+  <trantype>CUSTINVC</trantype>
+</advancedpdftemplate>
