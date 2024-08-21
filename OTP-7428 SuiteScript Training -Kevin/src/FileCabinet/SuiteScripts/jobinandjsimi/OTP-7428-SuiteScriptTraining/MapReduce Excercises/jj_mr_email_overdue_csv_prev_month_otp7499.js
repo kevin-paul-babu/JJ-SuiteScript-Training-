@@ -145,52 +145,43 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                 let Details    = reduceContext.values.map(function(value){
                     return JSON.parse(value);
                 })
-
-          
                 let csvContent = 'Customer Name,Customer Email,Invoice Document No,Invoice Amount,DaysOverdue\n';
                 Details.forEach(function(data){
                     csvContent+=data.customer+','+data.customerEmail+','+data.invoicedocno+','+data.invoiceTotal+','+data.overDue+'\n';
-                
                 });
-                
                 let csvFile = file.create({
                     name: 'customer_overdue_invoices'+customerId+".csv",
                     fileType: file.Type.CSV,
                     contents: csvContent,
                     folder: -15,
                 });
-
                 let csvFileId = csvFile.save();
                 let lookupsearchObj = search.lookupFields({
                     type: record.Type.CUSTOMER,
                     id: customerId,
-                    
                     columns: ['salesrep','entityid']
                  });
                 let customerName = lookupsearchObj.entityid;
-                 if (lookupsearchObj.salesrep && lookupsearchObj.salesrep.length > 0) {
+                if (lookupsearchObj.salesrep && lookupsearchObj.salesrep.length > 0) {
                     salesRep = lookupsearchObj.salesrep[0].value;
                     salesrep = lookupsearchObj.salesrep[0].text;
-                    
-                        let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesrep;
-                        email.send
-                        ({
-                            author: salesRep,
-                            body: eBody,
-                            recipients: customerId,
-                            subject: "Invoice Overdue Alert",
-                            attachments: [file.load({
-                                id: csvFileId
-                            })]
-        
-                        });
-                       
-                    
+                    let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesrep;
+                    email.send
+                    ({
+                        author: salesRep,
+                        body: eBody,
+                        recipients: customerId,
+                        subject: "Invoice Overdue Alert",
+                        attachments: [file.load({
+                            id: csvFileId
+                        })]
+                    });
                 }
                 else{
                     sendAdminEmailAlert(customerName,csvFileId, customerId)
                 }                  
-            }catch(e){
+            }catch(e)
+            {
                 log.error("error on reduce",e.message, e.stack)
             }
 
