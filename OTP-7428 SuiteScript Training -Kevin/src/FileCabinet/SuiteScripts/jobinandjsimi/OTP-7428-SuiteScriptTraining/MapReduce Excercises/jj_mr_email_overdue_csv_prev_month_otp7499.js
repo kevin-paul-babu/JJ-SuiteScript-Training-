@@ -46,12 +46,13 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
          * Defines the function to send email from NetSuite Admin to Customer with subject and attachment
          * @param {Object} 
          **/
-        function sendAdminEmailAlert(csvFileId, customerId) {
+        function sendAdminEmailAlert(customerName,csvFileId, customerId,) {
+            let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+"Cathy Cadigan";
             email.send({
                 author: -5,
-                body: "Monthly Invoices Overdue",
+                body: eBody,
                 recipients: customerId,
-                subject: "Overdue Alert",
+                subject: "Invoice Overdue Alert",
                 attachments: [file.load({
                     id: csvFileId
                 })]
@@ -63,7 +64,7 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
             {
                 return  search.create({
                     type: search.Type.INVOICE,
-                    filters: [['trandate','within','lastmonth'],"AND",['daysoverdue','greaterthan',0],"AND",['mainline','is','T']],
+                    filters: [['trandate','onorbefore','lastmonth'],"AND",['daysoverdue','greaterthan',0],"AND",['mainline','is','T']],
                     columns: ['entity','tranid','total','daysoverdue']
                 });
             }catch(e){
@@ -166,12 +167,12 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                     
                     columns: ['salesrep','entityid']
                  });
-                    let salesRep = lookupsearchObj.salesrep.value;
-                    let customerName = lookupsearchObj.entityid[0].text;
-                    let salesrep = lookupsearchObj.salesrep[0].text;
+                let customerName = lookupsearchObj.entityid;
+                 if (lookupsearchObj.salesrep && lookupsearchObj.salesrep.length > 0) {
+                    salesRep = lookupsearchObj.salesrep[0].value;
+                    salesrep = lookupsearchObj.salesrep[0].text;
                     
-                if(salesRep)
-                    {    let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesrep;
+                        let eBody = '<p>Dear'+customerName+',<p>'+'<p>\n</p>'+'<p>There are invoices that are overdue previous month</p>'+'<p>\n</p>'+'Best Regards'+'<p>\n</p>'+salesrep;
                         email.send
                         ({
                             author: salesRep,
@@ -181,11 +182,13 @@ define(['N/email', 'N/file', 'N/log', 'N/record', 'N/search'],
                             attachments: [file.load({
                                 id: csvFileId
                             })]
-                        })  
+        
+                        });
+                       
+                    
                 }
                 else{
-
-                    sendAdminEmailAlert(csvFileId, customerId)
+                    sendAdminEmailAlert(customerName,csvFileId, customerId)
                 }                  
             }catch(e){
                 log.error("error on reduce",e.message, e.stack)
