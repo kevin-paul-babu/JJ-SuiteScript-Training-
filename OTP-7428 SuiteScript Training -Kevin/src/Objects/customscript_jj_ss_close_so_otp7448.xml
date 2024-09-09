@@ -1,0 +1,24 @@
+<scheduledscript scriptid="customscript_jj_ss_close_so_otp7448">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ SS Close Sales Orders OTP-7448</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <scriptfile>[/SuiteScripts/jobinandjsimi/OTP-7428-SuiteScriptTraining/Schedule Excersises/jj_ss_closed_sales_order_otp7448.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_ss_close_so_otp7448">
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <status>NOTSCHEDULED</status>
+      <title>JJ SS Close Sales Orders OTP-7448</title>
+      <recurrence>
+        <single>
+          <repeat></repeat>
+          <startdate>2024-09-09</startdate>
+          <starttime>01:00:00Z</starttime>
+        </single>
+      </recurrence>
+    </scriptdeployment>
+  </scriptdeployments>
+</scheduledscript>

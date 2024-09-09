@@ -52,13 +52,13 @@ define(['N/email', 'N/log', 'N/record', 'N/runtime', 'N/search'],
                     let cusid = so.getValue({fieldId:'entity'});
                     log.debug("cusid",cusid);
 
-                    let cus = search.lookupFields({
+                    let customerObj = search.lookupFields({
                         type: search.Type.CUSTOMER,
                         id: cusid,
                         columns: ['overduebalance']
                        });
                   
-                    let overdue = cus.overduebalance;
+                    let overdue = customerObj.overduebalance;
                     log.debug("overdue",overdue);
                     if(overdue > 0)
                     {
@@ -82,7 +82,7 @@ define(['N/email', 'N/log', 'N/record', 'N/runtime', 'N/search'],
 
                            let salesemail = salesManagerEmail.email;
                            log.debug("salesemail",salesemail);
-
+                 
                         let sender  = runtime.getCurrentUser().id;
                         //let sender =  author123;
                         log.debug("author",author123);

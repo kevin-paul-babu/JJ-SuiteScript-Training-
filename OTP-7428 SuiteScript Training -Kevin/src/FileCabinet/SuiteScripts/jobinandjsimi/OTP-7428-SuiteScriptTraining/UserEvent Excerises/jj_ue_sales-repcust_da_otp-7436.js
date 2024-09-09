@@ -63,7 +63,6 @@ define(['N/record','N/search'],
                     }
           
                 });
-
               
                 let sp = newRecord.getText({ fieldId: 'custbody_jj_sp_txt_da_otp7436' });
                 log.debug("salesrep",sp);

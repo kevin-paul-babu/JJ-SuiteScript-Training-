@@ -236,46 +236,4 @@
       <subtab></subtab>
     </customrecordcustomfield>
   </customrecordcustomfields>
-  <instances>
-    <instance scriptid="val_56455_td2933147_775">
-      <custrecord_jj_sl_cusaemail_otp7491>infor@abc.com</custrecord_jj_sl_cusaemail_otp7491>
-      <custrecord_jj_sl_cusname_otp7491>ABC Company</custrecord_jj_sl_cusname_otp7491>
-      <custrecord_jj_sl_cusrecordlink_otp7491>https://system.netsuite.com/app/common/entity/custjob.nl?id=29&amp;compid=TD2933147</custrecord_jj_sl_cusrecordlink_otp7491>
-      <custrecord_jj_sl_cussubect_otp7491>hi</custrecord_jj_sl_cussubect_otp7491>
-      <custrecord_jj_sl_message_otp7491></custrecord_jj_sl_message_otp7491>
-      <isinactive>F</isinactive>
-    </instance>
-    <instance scriptid="val_56456_td2933147_434">
-      <custrecord_jj_sl_cusaemail_otp7491>amal.biju@gmail.com</custrecord_jj_sl_cusaemail_otp7491>
-      <custrecord_jj_sl_cusname_otp7491>Amal</custrecord_jj_sl_cusname_otp7491>
-      <custrecord_jj_sl_cusrecordlink_otp7491></custrecord_jj_sl_cusrecordlink_otp7491>
-      <custrecord_jj_sl_cussubect_otp7491>hi</custrecord_jj_sl_cussubect_otp7491>
-      <custrecord_jj_sl_message_otp7491>hi</custrecord_jj_sl_message_otp7491>
-      <isinactive>F</isinactive>
-    </instance>
-    <instance scriptid="val_56466_td2933147_578">
-      <custrecord_jj_sl_cusaemail_otp7491>mukhil@gmail.com</custrecord_jj_sl_cusaemail_otp7491>
-      <custrecord_jj_sl_cusname_otp7491>Mukhil M</custrecord_jj_sl_cusname_otp7491>
-      <custrecord_jj_sl_cusrecordlink_otp7491>https://system.netsuite.com/app/common/entity/custjob.nl?id=38&amp;compid=TD2933147</custrecord_jj_sl_cusrecordlink_otp7491>
-      <custrecord_jj_sl_cussubect_otp7491>test</custrecord_jj_sl_cussubect_otp7491>
-      <custrecord_jj_sl_message_otp7491></custrecord_jj_sl_message_otp7491>
-      <isinactive>F</isinactive>
-    </instance>
-    <instance scriptid="val_56468_td2933147_666">
-      <custrecord_jj_sl_cusaemail_otp7491>info@xyz.com</custrecord_jj_sl_cusaemail_otp7491>
-      <custrecord_jj_sl_cusname_otp7491>XYZ</custrecord_jj_sl_cusname_otp7491>
-      <custrecord_jj_sl_cusrecordlink_otp7491>https://system.netsuite.com/app/common/entity/custjob.nl?id=31&amp;compid=TD2933147</custrecord_jj_sl_cusrecordlink_otp7491>
-      <custrecord_jj_sl_cussubect_otp7491>test</custrecord_jj_sl_cussubect_otp7491>
-      <custrecord_jj_sl_message_otp7491></custrecord_jj_sl_message_otp7491>
-      <isinactive>F</isinactive>
-    </instance>
-    <instance scriptid="val_56469_td2933147_950">
-      <custrecord_jj_sl_cusaemail_otp7491>info@asd.com</custrecord_jj_sl_cusaemail_otp7491>
-      <custrecord_jj_sl_cusname_otp7491>asd</custrecord_jj_sl_cusname_otp7491>
-      <custrecord_jj_sl_cusrecordlink_otp7491></custrecord_jj_sl_cusrecordlink_otp7491>
-      <custrecord_jj_sl_cussubect_otp7491>test</custrecord_jj_sl_cussubect_otp7491>
-      <custrecord_jj_sl_message_otp7491>test</custrecord_jj_sl_message_otp7491>
-      <isinactive>F</isinactive>
-    </instance>
-  </instances>
 </customrecordtype>
